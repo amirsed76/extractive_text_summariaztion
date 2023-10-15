@@ -45,10 +45,10 @@ class Trainer:
         #
         # self.optimizer = torch.optim.Adam(
         #     filter(lambda p: p.requires_grad, self.model.parameters()), lr=hps.lr)
-        # self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
-        self.criterion = torch.nn.CrossEntropyLoss(reduction='none', weight=torch.Tensor([0.1, 0.9]).to(hps.device))
+        self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
+        # self.criterion = torch.nn.CrossEntropyLoss(reduction='none', weight=torch.Tensor([0.1, 0.9]).to(hps.device))
         # self.criterion = CustomLoss()
-        self.word_criterion = torch.nn.CrossEntropyLoss(reduction='none')
+        # self.word_criterion = torch.nn.CrossEntropyLoss(reduction='none')
         self.best_train_loss = None
         self.best_loss = None
         self.best_F = None
@@ -57,8 +57,8 @@ class Trainer:
         self.epoch = 1
         self.epoch_avg_loss = 0
         self.train_dir = train_dir
-        # self.report_epoch = 2
-        self.report_epoch = 120
+        self.report_epoch = 2
+        # self.report_epoch = 120
         self.scores = pd.read_csv(f"{os.path.join(hps.data_dir, 'train.csv')}")["scores"].values.tolist()
 
     def run_epoch(self, train_loader):
@@ -211,7 +211,7 @@ class Trainer:
 def run_training(model, hps, data_variables):
     trainer = Trainer(model=model, hps=hps, train_dir=os.path.join(hps.save_root, "train"))
     train_size = 287000
-    n_part = 8
+    n_part = 80
 
     print(f"data_loader")
     logger.info(model)

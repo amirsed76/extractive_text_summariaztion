@@ -97,8 +97,8 @@ class SLTester(TestPipLine):
         super().__init__(model, m, test_dir, limited)
         self.pred, self.true, self.match, self.match_true = 0, 0, 0, 0
         self._F = 0
-        self.criterion = torch.nn.CrossEntropyLoss(reduction='none', weight=torch.Tensor([0.3, 0.7]).to(hps.device))
-        # self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
+        # self.criterion = torch.nn.CrossEntropyLoss(reduction='none', weight=torch.Tensor([0.3, 0.7]).to(hps.device))
+        self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
         # self.criterion = CustomLoss()
         self.blocking_win = blocking_win
         self.score_path = score_path
@@ -234,6 +234,9 @@ class SLTester(TestPipLine):
             # p_sent = p_sent.view(-1, 2)  # [node, 2]
             label = g.ndata["label"][snode_id].sum(-1).squeeze().cpu()  # [n_node]
             topk, pred_idx = self.get_m_top(p_sent=p_sent, N=N, m=self.hps.m)
+            # pred_idx = torch.argwhere(p_sent[0, :].squeeze() > 0.5).reshape(-1)
+            # if len(pred_idx) == 0:
+            #     topk, pred_idx = self.get_m_top(p_sent=p_sent, N=N, m=1)
             # pred_idx = p_sent.argwhere(p_sent >= 0.5)
 
             # pred_idx = self.select_sentences(graph=g, m=self.hps.m)

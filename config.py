@@ -16,15 +16,15 @@ def pars_args():
 
     # Important settings
     parser.add_argument('--model', type=str, default='HSG', help='model structure[HSG|HDSG]')
-    parser.add_argument('--test_model', type=str, default='epoch_5',
+    parser.add_argument('--test_model', type=str, default='epoch_2',
                         help='choose different model to test [multi/evalbestmodel/trainbestmodel/earlystop]')
 
     parser.add_argument('--use_pyrouge', action='store_true', default=False, help='use_pyrouge')
 
-    parser.add_argument('--restore_model', type=str, default=f"{root}\\results\\save\\epoch_5",
-                        help='Restore model for further training. [bestmodel/HSGmodel/earlystop/None]')
-    # parser.add_argument('--restore_model', type=str, default='None',
+    # parser.add_argument('--restore_model', type=str, default=f"{root}\\results\\save\\epoch_1",
     #                     help='Restore model for further training. [bestmodel/HSGmodel/earlystop/None]')
+    parser.add_argument('--restore_model', type=str, default='None',
+                        help='Restore model for further training. [bestmodel/HSGmodel/earlystop/None]')
 
     # Where to save output
     parser.add_argument('--save_root', type=str, default=f'{root}\\results\\save\\', help='Root directory for all model.')
@@ -76,13 +76,13 @@ def pars_args():
     parser.add_argument('--max_grad_norm', type=float, default=1.0,
                         help='for gradient clipping max gradient normalization')
 
-    parser.add_argument('-m', type=int, default=3, help='decode summary length')
+    parser.add_argument('-m', type=int, default=4, help='decode summary length')
     parser.add_argument('--save_label', action='store_true', default=True, help='require multihead attention')
 
     parser.add_argument('--limited', action='store_true', default=False, help='limited hypo length')
     parser.add_argument('--blocking', action='store_true', default=False, help='ngram blocking')
 
-    parser.add_argument('--max_instances', type=int, default=None, help='max length of instances')
+    parser.add_argument('--max_instances', type=int, default=10, help='max length of instances')
     parser.add_argument('--from_instances_index', type=int, default=0, help='from_instances_index')
 
     parser.add_argument('--use_cache_graph', type=bool, default=True, help='use cache')
