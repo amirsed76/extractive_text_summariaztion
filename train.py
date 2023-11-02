@@ -83,7 +83,8 @@ def main():
                                                  vocab=data_variables["vocab"], hps=hps,
                                                  filter_word=data_variables["filter_word"],
                                                  w2s_path=data_variables["train_w2s_path"],
-                                                 graphs_dir=os.path.join(data_variables["graphs_dir"], "train"))
+                                                 graphs_dir=os.path.join(data_variables["graphs_dir"], "train"),
+                                                 data_type="train")
                 hps.from_instances_index = hps.from_instances_index + hps.max_instances
                 print(f">>>>from:", hps.from_instances_index)
         else:

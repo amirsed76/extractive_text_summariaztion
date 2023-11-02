@@ -70,9 +70,10 @@ def run_test(model, dataset, loader, model_name, hps):
         tester = SLTester(model, hps.m, limited=hps.limited, test_dir=test_dir,
                           score_path=os.path.join(hps.data_dir, "test.csv"), hps=hps)
 
-        for i, (G, index) in enumerate(loader):
+        for i, (G, syntax_graph, index) in enumerate(loader):
             G = G.to(hps.device)
-            tester.evaluation(G, index, dataset, blocking=hps.blocking)
+            syntax_graph = syntax_graph.to(hps.device)
+            tester.evaluation(G, syntax_graph, index, dataset, blocking=hps.blocking)
 
     running_avg_loss = tester.running_avg_loss
     with open(os.path.join(hps.save_root, "result.json"), "w") as f:
@@ -160,7 +161,7 @@ def main():
         logger.info("[MODEL] HeterSumGraph ")
         loader = data_loaders.make_dataloader(
             data_file=DATA_FILE, vocab=vocab, hps=hps, filter_word=FILTER_WORD, w2s_path=test_w2s_path,
-            graphs_dir=os.path.join(args.cache_dir, "graphs\\test")
+            graphs_dir=os.path.join(args.cache_dir, "graphs\\test"), data_type="test"
         )
         if hps.fill_graph_cache:
             return

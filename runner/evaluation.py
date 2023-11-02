@@ -35,11 +35,12 @@ def run_eval(model, loader, valset, hps, best_loss, best_F, non_descent_cnt, sav
     iter_start_time = time.time()
 
     with torch.no_grad():
-        tester = SLTester(model, hps.m,hps=hps, score_path=os.path.join(hps.data_dir, "test.csv"))
-        for i, (G, index) in enumerate(loader):
+        tester = SLTester(model, hps.m, hps=hps, score_path=os.path.join(hps.data_dir, "test.csv"))
+        for i, (G, syntax_graph, index) in enumerate(loader):
             G = G.to(hps.device)
+            syntax_graph = syntax_graph.to(hps.device)
 
-            tester.evaluation(G, index, valset)
+            tester.evaluation(G, syntax_graph, index, valset)
 
     running_avg_loss = tester.running_avg_loss
 

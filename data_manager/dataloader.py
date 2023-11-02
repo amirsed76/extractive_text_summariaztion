@@ -13,6 +13,8 @@ import torch.utils.data
 from tools.logger import *
 import dgl
 from dgl.data.utils import load_graphs
+from concurrent.futures import ProcessPoolExecutor
+
 
 FILTER_WORD = stopwords.words('english')
 punctuations = [',', '.', ':', ';', '?', '(', ')', '[', ']', '&', '!', '*', '@', '#', '$', '%', '\'\'', '\'', '`', '``',
@@ -305,7 +307,6 @@ class SummarizationDataSet(torch.utils.data.Dataset):
         return self.size
 
 
-
 class MultiSummarizationDataSet(SummarizationDataSet):
     """ Constructor: Dataset of example(object) for multiple document summarization"""
 
@@ -494,8 +495,10 @@ def read_text(file_name):
 
 
 def graph_collate_fn(samples):
-    graphs, index = map(list, zip(*samples))
+    graphs, syntax_graphs, index = map(list, zip(*samples))
     graph_len = [len(g.filter_nodes(lambda nodes: nodes.data["dtype"] == 1)) for g in graphs]  # sent node of graph
     sorted_len, sorted_index = torch.sort(torch.LongTensor(graph_len), dim=0, descending=True)
     batched_graph = dgl.batch([graphs[idx] for idx in sorted_index])
-    return batched_graph, [index[idx] for idx in sorted_index]
+    batched_syntax_graph = dgl.batch([syntax_graphs[idx] for idx in sorted_index])
+
+    return batched_graph,batched_syntax_graph, [index[idx] for idx in sorted_index]

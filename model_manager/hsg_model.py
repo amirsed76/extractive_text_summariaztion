@@ -111,7 +111,7 @@ class HSumGraph(nn.Module):
         self.ngram_enc = sentEncoder(self._hps, self._embed)
 
     def _sent_cnn_feature(self, graph, snode_id):
-        words= graph.nodes[snode_id].data["words"]
+        words = graph.nodes[snode_id].data["words"]
         ngram_feature = self.ngram_enc.forward(words)  # [snode, embed_size]
         graph.nodes[snode_id].data["sent_embedding"] = ngram_feature
         snode_pos = graph.nodes[snode_id].data["position"].view(-1)  # [n_nodes]

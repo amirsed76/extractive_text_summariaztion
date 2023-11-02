@@ -89,7 +89,7 @@ def get_scores(self, G, indexes):
 
         scores = torch.cat([scores, torch.Tensor(json.loads(self.scores[index])[:len(snod_id)])])
 
-    return scores.to(self.hps.device)
+    return scores.to(self.hps_layer.device)
 
 
 class SLTester(TestPipLine):
@@ -189,7 +189,7 @@ class SLTester(TestPipLine):
 
         return select_idx
 
-    def evaluation(self, G, index, dataset, blocking=False):
+    def evaluation(self, G, syntax_graph, index, dataset, blocking=False):
         """
             :param G: the model
             :param index: list, example id
@@ -197,7 +197,7 @@ class SLTester(TestPipLine):
             :param blocking: bool, for n-gram blocking
         """
         self.batch_number += 1
-        outputs = self.model.forward(G)
+        outputs = self.model.forward((G, syntax_graph))
         # outputs, word_outs = self.model.forward(G)
         # word_node_id = G.filter_nodes(lambda nodes: nodes.data["unit"] == 0)
         # G.nodes[word_node_id].data["word_out"] = word_outs

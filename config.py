@@ -16,15 +16,15 @@ def pars_args():
 
     # Important settings
     parser.add_argument('--model', type=str, default='HSG', help='model structure[HSG|HDSG]')
-    parser.add_argument('--test_model', type=str, default='epoch_2',
+    parser.add_argument('--test_model', type=str, default='train/current',
                         help='choose different model to test [multi/evalbestmodel/trainbestmodel/earlystop]')
 
     parser.add_argument('--use_pyrouge', action='store_true', default=False, help='use_pyrouge')
 
-    # parser.add_argument('--restore_model', type=str, default=f"{root}\\results\\save\\epoch_1",
-    #                     help='Restore model for further training. [bestmodel/HSGmodel/earlystop/None]')
-    parser.add_argument('--restore_model', type=str, default='None',
+    parser.add_argument('--restore_model', type=str, default=f"{root}\\results\\save\\epoch_5",
                         help='Restore model for further training. [bestmodel/HSGmodel/earlystop/None]')
+    # parser.add_argument('--restore_model', type=str, default='None',
+    #                     help='Restore model for further training. [bestmodel/HSGmodel/earlystop/None]')
 
     # Where to save output
     parser.add_argument('--save_root', type=str, default=f'{root}\\results\\save\\', help='Root directory for all model.')
@@ -42,7 +42,7 @@ def pars_args():
     parser.add_argument('--word_embedding', action='store_true', default=True,
                         help='whether to use Word embedding [default: True]')
     parser.add_argument('--word_emb_dim', type=int, default=300, help='Word embedding size [default: 300]')
-    parser.add_argument('--embed_train', action='store_true', default=True,
+    parser.add_argument('--embed_train', action='store_true', default=False,
                         help='whether to train Word embedding [default: False]')
     parser.add_argument('--feat_embed_size', type=int, default=50, help='feature embedding size [default: 50]')
     parser.add_argument('--n_layers', type=int, default=1, help='Number of GAT layers [default: 1]')
@@ -82,11 +82,13 @@ def pars_args():
     parser.add_argument('--limited', action='store_true', default=False, help='limited hypo length')
     parser.add_argument('--blocking', action='store_true', default=False, help='ngram blocking')
 
-    parser.add_argument('--max_instances', type=int, default=10, help='max length of instances')
+    parser.add_argument('--max_instances', type=int, default=None, help='max length of instances')
     parser.add_argument('--from_instances_index', type=int, default=0, help='from_instances_index')
 
     parser.add_argument('--use_cache_graph', type=bool, default=True, help='use cache')
     parser.add_argument('--fill_graph_cache', type=bool, default=False, help='use cache')
+    parser.add_argument('--syntax_graphs_dir',type=str, default=f'{root}\\cache\\CNNDM\syntax_graphs')
+    parser.add_argument('--graphs_dir',type=str, default=f'{root}\\cache\\CNNDM\\graphs')
 
     args = parser.parse_args()
 

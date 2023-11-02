@@ -57,8 +57,8 @@ class Trainer:
         self.epoch = 1
         self.epoch_avg_loss = 0
         self.train_dir = train_dir
-        self.report_epoch = 2
-        # self.report_epoch = 120
+        # self.report_epoch = 2
+        self.report_epoch = 120
         self.scores = pd.read_csv(f"{os.path.join(hps.data_dir, 'train.csv')}")["scores"].values.tolist()
 
     def run_epoch(self, train_loader):
@@ -69,8 +69,8 @@ class Trainer:
         epoch_loss = 0.0
         iters_start_time = time.time()
         # iter_start_time = time.time()
-        for i, (G, index) in enumerate(train_loader):
-            sentence_loss = self.train_batch(G=G, index=index)
+        for i, (G, syntax_graph, index) in enumerate(train_loader):
+            sentence_loss = self.train_batch(G=G, syntax_graph=syntax_graph, index=index)
             # print(f"{i}=>{loss}")
 
             train_sentence_loss += float(sentence_loss.data)
@@ -133,9 +133,10 @@ class Trainer:
             labels = torch.cat([labels, torch.isin(word_ids, summary_word_ids).int()])
         return torch.Tensor(labels).to(self.hps.device).long()
 
-    def train_batch(self, G, index):
+    def train_batch(self, G, syntax_graph, index):
         G = G.to(self.hps.device)
-        outputs = self.model.forward(G)  # [n_snodes, 2]
+        syntax_graph = syntax_graph.to(self.hps.device)
+        outputs = self.model.forward((G, syntax_graph))  # [n_snodes, 2]
         # outputs, word_out = self.model.forward(G)  # [n_snodes, 2]
         snode_id = G.filter_nodes(lambda nodes: nodes.data["dtype"] == 1)
         # scores = self.get_scores(G, index)
@@ -211,7 +212,7 @@ class Trainer:
 def run_training(model, hps, data_variables):
     trainer = Trainer(model=model, hps=hps, train_dir=os.path.join(hps.save_root, "train"))
     train_size = 287000
-    n_part = 80
+    n_part = 8
 
     print(f"data_loader")
     logger.info(model)
@@ -241,7 +242,8 @@ def run_training(model, hps, data_variables):
                                                                                 "train"),
                                                         from_index=from_index,
                                                         to_index=to_index,
-                                                        shuffle=True
+                                                        shuffle=False,
+                                                        data_type="train"
                                                         )
 
             print(f"train loader from {from_index} to {to_index} started epoch started ")
@@ -255,7 +257,8 @@ def run_training(model, hps, data_variables):
                                                     filter_word=data_variables["filter_word"],
                                                     w2s_path=data_variables["val_w2s_path"],
                                                     graphs_dir=os.path.join(data_variables["graphs_dir"],
-                                                                            "test"))
+                                                                            "test"),
+                                                    data_type="test")
 
         # valid_loader = data_loaders.make_dataloader(data_file=data_variables["valid_file"],
         #                                             vocab=data_variables["vocab"], hps=hps,
